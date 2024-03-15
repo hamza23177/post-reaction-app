@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/constant.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/post.dart';
@@ -14,10 +16,7 @@ class PostForm extends StatefulWidget {
   final Post? post;
   final String? title;
 
-  PostForm({
-    this.post,
-    this.title
-  });
+  PostForm({this.post, this.title});
 
   @override
   _PostFormState createState() => _PostFormState();
@@ -32,7 +31,7 @@ class _PostFormState extends State<PostForm> {
 
   Future getImage() async {
     final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null){
+    if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
@@ -40,21 +39,20 @@ class _PostFormState extends State<PostForm> {
   }
 
   void _createPost() async {
-    String? image = _imageFile ==  null ? null : getStringImage(_imageFile);
+    String? image = _imageFile == null ? null : getStringImage(_imageFile);
     ApiResponse response = await createPost(_txtControllerBody.text, image);
 
-    if(response.error ==  null) {
+    if (response.error == null) {
       Navigator.of(context).pop();
-    }
-    else if (response.error == unauthorized){
+    } else if (response.error == unauthorized) {
       logout().then((value) => {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Login()), (route) => false)
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
       });
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${response.error}')
-      ));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
       setState(() {
         _loading = !_loading;
       });
@@ -66,16 +64,15 @@ class _PostFormState extends State<PostForm> {
     ApiResponse response = await editPost(postId, _txtControllerBody.text);
     if (response.error == null) {
       Navigator.of(context).pop();
-    }
-    else if(response.error == unauthorized){
+    } else if (response.error == unauthorized) {
       logout().then((value) => {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Login()), (route) => false)
-      });
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${response.error}')
-      ));
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
       setState(() {
         _loading = !_loading;
       });
@@ -84,7 +81,7 @@ class _PostFormState extends State<PostForm> {
 
   @override
   void initState() {
-    if(widget.post != null){
+    if (widget.post != null) {
       _txtControllerBody.text = widget.post!.body ?? '';
     }
     super.initState();
@@ -95,63 +92,87 @@ class _PostFormState extends State<PostForm> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Color(0xffF5F5F5),
         appBar: AppBar(
+          backgroundColor: Color(0xffF57752),
+          elevation: 0,
           title: Text('${widget.title}'),
+          centerTitle: true,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
-        body:_loading ? Center(child: CircularProgressIndicator(),) :  ListView(
-          children: [
-            widget.post != null ? SizedBox() :
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200,
-              decoration: BoxDecoration(
-                  image: _imageFile == null ? null : DecorationImage(
-                      image: FileImage(_imageFile ?? File('')),
-                      fit: BoxFit.cover
-                  )
-              ),
-              child: Center(
-                child: IconButton(
-                  icon: Icon(Icons.image, size:50, color: Colors.black38),
-                  onPressed: (){
-                    getImage();
-                  },
+        body: _loading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xffF57752),
                 ),
-              ),
-            ),
-            Form(
-              key: _formKey,
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: TextFormField(
-                  controller: _txtControllerBody,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 9,
-                  validator: (val) => val!.isEmpty ? 'مطلوب كتابة نص البوست' : null,
-                  decoration: InputDecoration(
-                      hintText: "نص البوست ...",
-                      border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))
+              )
+            : Stack(
+                children: [
+                  ListView(
+                    children: [
+                      widget.post != null
+                          ? SizedBox()
+                          : Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height*0.5,
+                              decoration: BoxDecoration(
+                                  image: _imageFile == null
+                                      ? null
+                                      : DecorationImage(
+                                          image:
+                                              FileImage(_imageFile ?? File('')),
+                                          fit: BoxFit.contain)),
+                              child: Center(
+                                child: IconButton(
+                                  icon: Icon(Icons.image,
+                                      size: 50, color: Colors.black38),
+                                  onPressed: () {
+                                    getImage();
+                                  },
+                                ),
+                              ),
+                            ),
+                      Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: TextFormField(
+                            controller: _txtControllerBody,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 9,
+                            validator: (val) =>
+                                val!.isEmpty ? 'مطلوب كتابة نص المنشور' : null,
+                            decoration: InputDecoration(
+                                hintText: "نص المنشور ...",
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.black38))),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: kTextButton('نشر', () {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _loading = !_loading;
+                            });
+                            if (widget.post == null) {
+                              _createPost();
+                            } else {
+                              _editPost(widget.post!.id ?? 0);
+                            }
+                          }
+                        }),
+                      )
+                    ],
                   ),
-                ),
+                  CustomPaint(
+                    painter: MyPainter(),
+                    child: Container(height: 0),
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: kTextButton('بوست', (){
-                if (_formKey.currentState!.validate()){
-                  setState(() {
-                    _loading = !_loading;
-                  });
-                  if (widget.post == null) {
-                    _createPost();
-                  } else {
-                    _editPost(widget.post!.id ?? 0);
-                  }
-                }
-              }),
-            )
-          ],
-        ),
       ),
     );
   }

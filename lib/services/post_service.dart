@@ -38,6 +38,8 @@ Future<ApiResponse> getPosts() async {
   return apiResponse;
 }
 
+// get post mazad
+
 // Create post
 Future<ApiResponse> createPost(String body, String? image) async {
   ApiResponse apiResponse = ApiResponse();

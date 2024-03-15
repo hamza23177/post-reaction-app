@@ -1,13 +1,15 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled1/constant.dart';
+import 'package:flutter/services.dart';
+import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/user.dart';
-import 'package:untitled1/screens/register.dart';
 import 'package:untitled1/services/user_services.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../constant.dart';
+import 'drower_home.dart';
 import 'home.dart';
+import 'register.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -40,7 +42,7 @@ class _LoginState extends State<Login> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Home()), (route) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>DrowerHome()), (route) => false);
   }
 
   @override
@@ -48,45 +50,56 @@ class _LoginState extends State<Login> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Color(0xffF5F5F5),
         appBar: AppBar(
-          title: Text('تسجيل دخول'),
-          centerTitle: true,
+          backgroundColor: Color(0xffF57752),
+          elevation: 0,
+          title: Text('تجيل دخول'),
+          centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
-        body: Form(
-          key: formkey,
-          child: ListView(
-            padding: EdgeInsets.all(32),
-            children: [
-              TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: txtEmail,
-                  validator: (val) => val!.isEmpty ? 'الإيميل غير صالح' : null,
-                  decoration: kInputDecoration('إيميل')
+        body: Stack(
+          children: [
+            Form(
+              key: formkey,
+              child: ListView(
+                padding: EdgeInsets.all(32),
+                children: [
+                  TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: txtEmail,
+                      validator: (val) => val!.isEmpty ? 'الإيميل غير صالح' : null,
+                      decoration: kInputDecoration('الإيميل')
+                  ),
+                  SizedBox(height: 10,),
+                  TextFormField(
+                      controller: txtPassword,
+                      obscureText: true,
+                      validator: (val) => val!.length < 6 ? 'مطلوب على الأقل 6 محارف' : null,
+                      decoration: kInputDecoration('كلمة المرور')
+                  ),
+                  SizedBox(height: 10,),
+                  loading? Center(child: CircularProgressIndicator(),)
+                      :
+                  kTextButton('تجيل الدخول', () {
+                    if (formkey.currentState!.validate()){
+                      setState(() {
+                        loading = true;
+                        _loginUser();
+                      });
+                    }
+                  }),
+                  SizedBox(height: 10,),
+                  kLoginRegisterHint('لا تملك حساب ؟', 'تسجيل', (){
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Register()), (route) => false);
+                  })
+                ],
               ),
-              SizedBox(height: 10,),
-              TextFormField(
-                  controller: txtPassword,
-                  obscureText: true,
-                  validator: (val) => val!.length < 6 ? 'مطلوب على الأقل 6 حروف' : null,
-                  decoration: kInputDecoration('كلمة المرور')
-              ),
-              SizedBox(height: 10,),
-              loading? Center(child: CircularProgressIndicator(),)
-                  :
-              kTextButton('تسجيل الدخول', () {
-                if (formkey.currentState!.validate()){
-                  setState(() {
-                    loading = true;
-                    _loginUser();
-                  });
-                }
-              }),
-              SizedBox(height: 10,),
-              kLoginRegisterHint('لاتملك حساب ؟ ', 'تسجيل', (){
-                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Register()), (route) => false);
-              })
-            ],
-          ),
+            ),
+            CustomPaint(
+              painter: MyPainter(),
+              child: Container(height: 0),
+            ),
+          ],
         ),
       ),
     );

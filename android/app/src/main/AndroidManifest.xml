@@ -2,7 +2,7 @@
     package="com.example.untitled1">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="untitled1"
+        android:label="دليل مدينة دوما"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true">

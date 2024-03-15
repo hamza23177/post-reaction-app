@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/comment.dart';
 import 'package:untitled1/services/comment_service.dart';
@@ -122,133 +124,145 @@ class _CommentScreenState extends State<CommentScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Color(0xffF5F5F5),
         appBar: AppBar(
+          backgroundColor: Color(0xffF57752),
+          elevation: 0,
           title: Text('التعليقات'),
+          centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
-        body: _loading ? Center(child: CircularProgressIndicator(),) :
-        Column(
-            children: [
-              Expanded(
-                  child: RefreshIndicator(
-                      onRefresh: (){
-                        return _getComments();
-                      },
-                      child: ListView.builder(
-                          itemCount: _commentsList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Comment comment = _commentsList[index];
-                            return Container(
-                              padding: EdgeInsets.all(10),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(color: Colors.black26, width: 0.5)
-                                  )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: _loading ? Center(child: CircularProgressIndicator(color: Color(0xffF57752),),) :
+        Stack(
+          children: [
+            Column(
+                children: [
+                  Expanded(
+                      child: RefreshIndicator(
+                          onRefresh: (){
+                            return _getComments();
+                          },
+                          child: ListView.builder(
+                              itemCount: _commentsList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                Comment comment = _commentsList[index];
+                                return Container(
+                                  padding: EdgeInsets.all(13),
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(color: Colors.black26, width: 0.5)
+                                      )
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                                image: comment.user!.image != null ? DecorationImage(
-                                                    image: NetworkImage('${comment.user!.image}'),
-                                                    fit: BoxFit.cover
-                                                ) : null,
-                                                borderRadius: BorderRadius.circular(15),
-                                                color: Colors.blueGrey
-                                            ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    image: comment.user!.image != null ? DecorationImage(
+                                                        image: NetworkImage('${comment.user!.image}'),
+                                                        fit: BoxFit.cover
+                                                    ) : null,
+                                                    borderRadius: BorderRadius.circular(15),
+                                                    color: Colors.blueGrey
+                                                ),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Text(
+                                                '${comment.user!.name}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 16
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          SizedBox(width: 10,),
-                                          Text(
-                                            '${comment.user!.name}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16
+                                          comment.user!.id == userId ?
+                                          PopupMenuButton(
+                                            child: Padding(
+                                                padding: EdgeInsets.only(right:10),
+                                                child: Icon(Icons.more_vert, color: Colors.black,)
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      comment.user!.id == userId ?
-                                      PopupMenuButton(
-                                        child: Padding(
-                                            padding: EdgeInsets.only(right:10),
-                                            child: Icon(Icons.more_vert, color: Colors.black,)
-                                        ),
-                                        itemBuilder: (context) => [
-                                          PopupMenuItem(
-                                              child: Text('تعديل'),
-                                              value: 'edit'
-                                          ),
-                                          PopupMenuItem(
-                                              child: Text('حذف'),
-                                              value: 'delete'
-                                          )
-                                        ],
-                                        onSelected: (val){
-                                          if(val == 'edit'){
-                                            setState(() {
-                                              _editCommentId = comment.id ?? 0;
-                                              _txtCommentController.text = comment.comment ?? '';
-                                            });
+                                            itemBuilder: (context) => [
+                                              PopupMenuItem(
+                                                  child: Text('تعديل'),
+                                                  value: 'edit'
+                                              ),
+                                              PopupMenuItem(
+                                                  child: Text('حذف'),
+                                                  value: 'delete'
+                                              )
+                                            ],
+                                            onSelected: (val){
+                                              if(val == 'edit'){
+                                                setState(() {
+                                                  _editCommentId = comment.id ?? 0;
+                                                  _txtCommentController.text = comment.comment ?? '';
+                                                });
 
-                                          } else {
-                                            _deleteComment(comment.id ?? 0);
-                                          }
-                                        },
-                                      ) : SizedBox()
+                                              } else {
+                                                _deleteComment(comment.id ?? 0);
+                                              }
+                                            },
+                                          ) : SizedBox()
+                                        ],
+                                      ), SizedBox(height: 10,),
+                                      Text('${comment.comment}')
                                     ],
-                                  ), SizedBox(height: 10,),
-                                  Text('${comment.comment}')
-                                ],
-                              ),
-                            );
-                          }
-                      )
-                  )
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(color: Colors.black26, width: 0.5
+                                  ),
+                                );
+                              }
+                          )
                       )
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: kInputDecoration('تعليق'),
-                        controller: _txtCommentController,
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(color: Colors.black26, width: 0.5
+                          )
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: (){
-                        if(_txtCommentController.text.isNotEmpty){
-                          setState(() {
-                            _loading = true;
-                          });
-                          if (_editCommentId > 0){
-                            _editComment();
-                          } else {
-                            _createComment();
-                          }
-                        }
-                      },
-                    )
-                  ],
-                ),
-              )
-            ]
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: kInputDecoration('اكتب تعليقاّ ...'),
+                            controller: _txtCommentController,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send,color: Color(0xffF57752),),
+                          onPressed: (){
+                            if(_txtCommentController.text.isNotEmpty){
+                              setState(() {
+                                _loading = true;
+                              });
+                              if (_editCommentId > 0){
+                                _editComment();
+                              } else {
+                                _createComment();
+                              }
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ]
+            ),
+            CustomPaint(
+              painter: MyPainter(),
+              child: Container(height: 0),
+            ),
+          ],
         ),
       ),
     );

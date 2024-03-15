@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:untitled1/constant.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/screens/home.dart';
-import 'package:untitled1/screens/login.dart';
 import 'package:untitled1/services/user_services.dart';
+import 'package:flutter/material.dart';
+
+import 'drower_home.dart';
+import 'login.dart';
+
 
 class Loading extends StatefulWidget {
   @override
@@ -20,7 +23,7 @@ class _LoadingState extends State<Loading> {
     else {
       ApiResponse response = await getUserDetail();
       if (response.error == null){
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Home()), (route) => false);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>DrowerHome()), (route) => false);
       }
       else if (response.error == unauthorized){
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>Login()), (route) => false);
@@ -41,14 +44,13 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        color: Colors.white,
-        child: Center(
-            child: CircularProgressIndicator()
-        ),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      color: Colors.white,
+      child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xffF57752),
+          )
       ),
     );
   }

@@ -4,13 +4,19 @@ class User {
   String? image;
   String? email;
   String? token;
+  String? phone;
+  String? work;
+  String? address;
 
   User({
     this.id,
     this.name,
     this.image,
     this.email,
-    this.token
+    this.token,
+    this.phone,
+    this.work,
+    this.address
   });
 
 
@@ -21,7 +27,10 @@ class User {
         name: json['user']['name'],
         image: json['user']['image'],
         email: json['user']['email'],
-        token: json['token']
+        token: json['token'],
+        phone: json['user']['phone'],
+        work: json['user']['work'],
+        address: json['user']['address'],
     );
   }
 }

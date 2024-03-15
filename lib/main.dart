@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-
-import 'screens/loading.dart';
+import 'package:untitled1/splash_screen.dart';
 
 void main() {
   runApp(App());
 }
+
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Loading(),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Splash(),
     );
   }
 }

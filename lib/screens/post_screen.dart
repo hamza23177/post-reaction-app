@@ -85,137 +85,171 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Center(child: CircularProgressIndicator())
-        : Directionality(
-      textDirection: TextDirection.rtl,
-          child: RefreshIndicator(
-              onRefresh: () {
-                return retrievePosts();
-              },
-              child: ListView.builder(
-                  itemCount: _postList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _postList[index];
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 38,
-                                      height: 38,
-                                      decoration: BoxDecoration(
-                                          image: post.user!.image != null
-                                              ? DecorationImage(
-                                                  image: NetworkImage(
-                                                      '${post.user!.image}'))
-                                              : null,
-                                          borderRadius: BorderRadius.circular(25),
-                                          color: Colors.amber),
+        ? Center(
+            child: CircularProgressIndicator(
+            color: Color(0xffF57752),
+          ))
+        : RefreshIndicator(
+            onRefresh: () {
+              return retrievePosts();
+            },
+            child: ListView.builder(
+                itemCount: _postList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Post post = _postList[index];
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: BoxDecoration(
+                                      image: post.user!.image != null
+                                          ? DecorationImage(
+                                              image: NetworkImage(
+                                                  '${post.user!.image}'),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: Color(0xffF57752),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      '${post.user!.name}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 17),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    '${post.user!.name}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 17),
+                                  )
+                                ],
                               ),
-                              post.user!.id == userId
-                                  ? PopupMenuButton(
-                                      child: Padding(
-                                          padding: EdgeInsets.only(right: 10),
-                                          child: Icon(
-                                            Icons.more_vert,
-                                            color: Colors.black,
-                                          )),
-                                      itemBuilder: (context) => [
-                                        PopupMenuItem(
-                                            child: Text('نعديل'), value: 'edit'),
-                                        PopupMenuItem(
-                                            child: Text('حذف'),
-                                            value: 'delete')
-                                      ],
-                                      onSelected: (val) {
-                                        if (val == 'edit') {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                                  builder: (context) => PostForm(
-                                                        title: 'تعديل البوست',
-                                                        post: post,
-                                                      )));
-                                        } else {
-                                          _handleDeletePost(post.id ?? 0);
-                                        }
-                                      },
-                                    )
-                                  : SizedBox()
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          Text('${post.body}'),
-                          post.image != null
-                              ? Container(
+                            ),
+                            post.user!.id == userId
+                                ? PopupMenuButton(
+                                    child: Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          color: Colors.black,
+                                        )),
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                          child: Text('تعديل'), value: 'edit'),
+                                      PopupMenuItem(
+                                          child: Text('حذف'), value: 'delete')
+                                    ],
+                                    onSelected: (val) {
+                                      if (val == 'edit') {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) => PostForm(
+                                                      title: 'تعديل المنشور',
+                                                      post: post,
+                                                    )));
+                                      } else {
+                                        _handleDeletePost(post.id ?? 0);
+                                      }
+                                    },
+                                  )
+                                : SizedBox()
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Text('${post.body}'),
+                        post.image != null
+                            ? Stack(
+                          alignment: Alignment.center,
+                              children: [
+                                Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: 400,
+                                  height: MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.only(top: 5),
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage('${post.image}'),
-                                          fit: BoxFit.cover)),
-                                )
-                              : SizedBox(
-                                  height: post.image != null ? 0 : 10,
+                                    image: DecorationImage(
+                                      image: NetworkImage('${post.image}'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                          Row(
-                            children: [
-                              kLikeAndComment(
-                                  post.likesCount ?? 0,
-                                  post.selfLiked == true
-                                      ? Icons.favorite
-                                      : Icons.favorite_outline,
-                                  post.selfLiked == true
-                                      ? Colors.red
-                                      : Colors.black54, () {
-                                _handlePostLikeDislike(post.id ?? 0);
-                              }),
-                              Container(
-                                height: 25,
-                                width: 0.5,
-                                color: Colors.black38,
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5), // تعديل شفافية اللون حسب الحاجة
+                                  ),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  margin: EdgeInsets.only(top: 5),
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage('${post.image}'),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                                ],
+                            )
+                            : SizedBox(
+                                height: post.image != null ? 0 : 10,
                               ),
-                              kLikeAndComment(post.commentsCount ?? 0,
-                                  Icons.sms_outlined, Colors.black54, () {
-                                Navigator.of(context).push(MaterialPageRoute(
+                        Row(
+                          children: [
+                            kLikeAndComment(
+                                post.likesCount ?? 0,
+                                post.selfLiked == true
+                                    ? Icons.favorite
+                                    : Icons.favorite_outline,
+                                post.selfLiked == true
+                                    ? Colors.red
+                                    : Colors.black54, () {
+                              _handlePostLikeDislike(post.id ?? 0);
+                            }),
+                            Container(
+                              height: 25,
+                              width: 0.5,
+                              color: Colors.black38,
+                            ),
+                            kLikeAndComment(
+                              post.commentsCount ?? 0,
+                              Icons.sms_outlined,
+                              Colors.black54,
+                              () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
                                     builder: (context) => CommentScreen(
-                                          postId: post.id,
-                                        )));
-                              }),
-                            ],
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 0.5,
-                            color: Colors.black26,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-            ),
-        );
+                                      postId: post.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 0.5,
+                          color: Colors.black26,
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+          );
   }
 }
