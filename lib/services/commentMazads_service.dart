@@ -1,8 +1,8 @@
 
 import 'dart:convert';
-import 'package:untitled1/models/commentMazad.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled1/models/api_response.dart';
+import 'package:untitled1/models/commentMazad.dart';
 
 import '../constant.dart';
 import 'user_services.dart';
@@ -53,7 +53,7 @@ Future<ApiResponse> createComment(int postId, String? comment) async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         }, body: {
-          'comment': comment
+          'commenmaz': comment
         });
 
     switch(response.statusCode){
@@ -121,7 +121,7 @@ Future<ApiResponse> editComment(int commentId, String comment) async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         }, body: {
-          'comment': comment
+          'commenmaz': comment
         });
 
     switch(response.statusCode){

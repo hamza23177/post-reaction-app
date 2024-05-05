@@ -2,6 +2,7 @@ import 'package:untitled1/constant.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/post.dart';
 import 'package:untitled1/screens/comment_screen.dart';
+import 'package:untitled1/screens/post_user_profile.dart';
 import 'package:untitled1/services/post_service.dart';
 import 'package:untitled1/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -107,33 +108,50 @@ class _PostScreenState extends State<PostScreen> {
                           children: [
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 38,
-                                    height: 38,
-                                    decoration: BoxDecoration(
-                                      image: post.user!.image != null
-                                          ? DecorationImage(
-                                              image: NetworkImage(
-                                                  '${post.user!.image}'),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : null,
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: Color(0xffF57752),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ContactUsPage(
+                                        image: '${post.user!.image}',
+                                        username: '${post.user!.name}',
+                                        work: '${post.user!.work}',
+                                        about: '${post.user!.obs}',
+                                        phone: '${post.user!.phone}',
+                                        location: '${post.user!.address}',
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    '${post.user!.name}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 17),
-                                  )
-                                ],
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 38,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        image: post.user!.image != null
+                                            ? DecorationImage(
+                                                image: NetworkImage(
+                                                    '${post.user!.image}'),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Color(0xffF57752),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      '${post.user!.name}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 17),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             post.user!.id == userId
@@ -171,39 +189,18 @@ class _PostScreenState extends State<PostScreen> {
                         ),
                         Text('${post.body}'),
                         post.image != null
-                            ? Stack(
-                          alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  margin: EdgeInsets.only(top: 5),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage('${post.image}'),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5), // تعديل شفافية اللون حسب الحاجة
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  margin: EdgeInsets.only(top: 5),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage('${post.image}'),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                                ],
+                            ? GestureDetector(
+                            onTap: () => showFullImage(context, '${post.image}'),
+                              child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*0.5,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage('${post.image}'),
+                                fit: BoxFit.cover, // هذا يغير كيفية ملاءمة الصورة داخل الحاوية
+                              ),
+                          ),
+                        ),
                             )
                             : SizedBox(
                                 height: post.image != null ? 0 : 10,

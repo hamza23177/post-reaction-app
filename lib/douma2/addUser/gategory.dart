@@ -1,3 +1,5 @@
+
+import 'package:untitled1/constant.dart';
 import 'package:untitled1/douma2/aqarat/aqarat_home.dart';
 import 'package:untitled1/douma2/artist/artistHome.dart';
 import 'package:untitled1/douma2/bread/breadHome.dart';
@@ -19,6 +21,9 @@ import 'package:untitled1/douma2/transporter/transportHome.dart';
 import 'package:untitled1/douma2/travel/travel_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled1/screens/login.dart';
+import 'package:untitled1/screens/test.dart';
+import 'package:untitled1/services/user_services.dart';
 
 class MyCustomUI extends StatefulWidget {
   @override
@@ -59,18 +64,32 @@ class _MyCustomUIState extends State<MyCustomUI>
     double _w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xffF5F5F5),
-      appBar: AppBar(
-        backgroundColor: Color(0xffF57752),
-        elevation: 0,
-        title: Text('دليل مدينة دوما'),
-        centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Color(0xffF57752),
+      //   elevation: 0,
+      //   title: Text('دليل مدينة دوما'),
+      //   centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.exit_to_app),
+      //       onPressed: () {
+      //         logout().then((value) => {
+      //           Navigator.of(context).pushAndRemoveUntil(
+      //               MaterialPageRoute(builder: (context) => Login()),
+      //                   (route) => false)
+      //         });
+      //       },
+      //     )
+      //   ],
+      // ),
       body: Stack(
         children: [
           ListView(
             physics:
                 BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             children: [
+              SizedBox(height: 20.0,),
+              NewsSlider(),
               SizedBox(height: _w / 20),
               groupOfCards(
                 'القسم الطبي',
@@ -152,10 +171,10 @@ class _MyCustomUIState extends State<MyCustomUI>
               ),
             ],
           ),
-          CustomPaint(
-            painter: MyPainter(),
-            child: Container(height: 0),
-          ),
+          // CustomPaint(
+          //   painter: MyPainter(),
+          //   child: Container(height: 0),
+          // ),
         ],
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/commentMazad.dart';
+import 'package:untitled1/screens/post_user_profile.dart';
 import 'package:untitled1/services/commentMazads_service.dart';
 import 'package:untitled1/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -9,18 +11,18 @@ import 'package:flutter/material.dart';
 import '../constant.dart';
 import 'login.dart';
 
-class CommentMazad extends StatefulWidget {
+class CommentMazadScreen extends StatefulWidget {
   final int? postId;
 
-  CommentMazad({
+  CommentMazadScreen({
     this.postId
   });
 
   @override
-  _CommentMazadState createState() => _CommentMazadState();
+  _CommentMazadScreenState createState() => _CommentMazadScreenState();
 }
 
-class _CommentMazadState extends State<CommentMazad> {
+class _CommentMazadScreenState extends State<CommentMazadScreen> {
   List<dynamic> _commentsList = [];
   bool _loading = true;
   int userId = 0;
@@ -28,7 +30,7 @@ class _CommentMazadState extends State<CommentMazad> {
   TextEditingController _txtCommentController = TextEditingController();
 
   // Get comments
-  Future<void> _getCommentsMazad() async {
+  Future<void> _getComments() async {
     userId = await getUserId();
     ApiResponse response = await getComments(widget.postId ?? 0);
 
@@ -50,12 +52,12 @@ class _CommentMazadState extends State<CommentMazad> {
     }
   }
   // create comment
-  void _createCommentMazad() async {
+  void _createComment() async {
     ApiResponse response = await createComment(widget.postId ?? 0, _txtCommentController.text);
 
     if(response.error == null){
       _txtCommentController.clear();
-      _getCommentsMazad();
+      _getComments();
     }
     else if(response.error == unauthorized){
       logout().then((value) => {
@@ -73,13 +75,13 @@ class _CommentMazadState extends State<CommentMazad> {
   }
 
   // edit comment
-  void _editCommentMazad() async {
+  void _editComment() async {
     ApiResponse response = await editComment(_editCommentId, _txtCommentController.text);
 
     if(response.error == null) {
       _editCommentId = 0;
       _txtCommentController.clear();
-      _getCommentsMazad();
+      _getComments();
     }
     else if(response.error == unauthorized){
       logout().then((value) => {
@@ -95,11 +97,11 @@ class _CommentMazadState extends State<CommentMazad> {
 
 
   // Delete comment
-  void _deleteCommentMazad(int commentId) async {
+  void _deleteComment(int commentId) async {
     ApiResponse response = await deleteComment(commentId);
 
     if(response.error == null){
-      _getCommentsMazad();
+      _getComments();
     }
     else if(response.error == unauthorized){
       logout().then((value) => {
@@ -115,7 +117,7 @@ class _CommentMazadState extends State<CommentMazad> {
 
   @override
   void initState() {
-    _getCommentsMazad();
+    _getComments();
     super.initState();
   }
 
@@ -128,14 +130,8 @@ class _CommentMazadState extends State<CommentMazad> {
         appBar: AppBar(
           backgroundColor: Color(0xffF57752),
           elevation: 0,
-          title: Text('المبلغ المدفوع'),
-          centerTitle: true,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-          // actions: <Widget>[
-          //
-          //   Padding(padding: EdgeInsets.all(16.0),
-          //   child: Text('200',style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,),)),
-          // ],
+          title: Text('المبلغ الحالي'),
+          centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         body: _loading ? Center(child: CircularProgressIndicator(color: Color(0xffF57752),),) :
         Stack(
@@ -145,7 +141,7 @@ class _CommentMazadState extends State<CommentMazad> {
                   Expanded(
                       child: RefreshIndicator(
                           onRefresh: (){
-                            return _getCommentsMazad();
+                            return _getComments();
                           },
                           child: ListView.builder(
                               itemCount: _commentsList.length,
@@ -165,29 +161,46 @@ class _CommentMazadState extends State<CommentMazad> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                    image: comment.user!.image != null ? DecorationImage(
-                                                        image: NetworkImage('${comment.user!.image}'),
-                                                        fit: BoxFit.cover
-                                                    ) : null,
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    color: Colors.blueGrey
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => ContactUsPage(
+                                                    image: '${comment.user!.image}',
+                                                    username: '${comment.user!.name}',
+                                                    work: '${comment.user!.work}',
+                                                    about: '${comment.user!.obs}',
+                                                    phone: '${comment.user!.phone}',
+                                                    location: '${comment.user!.address}',
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(width: 10,),
-                                              Text(
-                                                '${comment.user!.name}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16
+                                              );
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                      image: comment.user!.image != null ? DecorationImage(
+                                                          image: NetworkImage('${comment.user!.image}'),
+                                                          fit: BoxFit.cover
+                                                      ) : null,
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      color: Colors.blueGrey
+                                                  ),
                                                 ),
-                                              )
-                                            ],
+                                                SizedBox(width: 10,),
+                                                Text(
+                                                  '${comment.user!.name}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 16
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                           comment.user!.id == userId ?
                                           PopupMenuButton(
@@ -213,7 +226,7 @@ class _CommentMazadState extends State<CommentMazad> {
                                                 });
 
                                               } else {
-                                                _deleteCommentMazad(comment.id ?? 0);
+                                                _deleteComment(comment.id ?? 0);
                                               }
                                             },
                                           ) : SizedBox()
@@ -240,9 +253,8 @@ class _CommentMazadState extends State<CommentMazad> {
                       children: [
                         Expanded(
                           child: TextFormField(
-                            decoration: kInputDecoration('ضع سعرك الأعلى للمنتج ل.س ...'),
+                            decoration: kInputDecoration('اكتب سعرك الأعلى للمنتج ...'),
                             controller: _txtCommentController,
-                            keyboardType: TextInputType.number,
                           ),
                         ),
                         IconButton(
@@ -253,9 +265,9 @@ class _CommentMazadState extends State<CommentMazad> {
                                 _loading = true;
                               });
                               if (_editCommentId > 0){
-                                _editCommentMazad();
+                                _editComment();
                               } else {
-                                _createCommentMazad();
+                                _createComment();
                               }
                             }
                           },
@@ -264,6 +276,10 @@ class _CommentMazadState extends State<CommentMazad> {
                     ),
                   )
                 ]
+            ),
+            CustomPaint(
+              painter: MyPainter(),
+              child: Container(height: 0),
             ),
           ],
         ),

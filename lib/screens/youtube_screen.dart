@@ -49,13 +49,13 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
         )):
       Scaffold(
       backgroundColor: Color(0xffF5F5F5),
-      appBar: AppBar(
-        backgroundColor: Color(0xffF57752),
-        elevation: 0,
-        title: Text(channelTitle),
-        centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Color(0xffF57752),
+      //   elevation: 0,
+      //   title: Text(channelTitle),
+      //   centerTitle: true,
+      //   systemOverlayStyle: SystemUiOverlayStyle.light,
+      // ),
       body: Stack(
         children: [
           ListView.builder(
@@ -104,10 +104,10 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
               );
             },
           ),
-          CustomPaint(
-            painter: MyPainter(),
-            child: Container(height: 0),
-          ),
+          // CustomPaint(
+          //   painter: MyPainter(),
+          //   child: Container(height: 0),
+          // ),
         ],
       ),
     );

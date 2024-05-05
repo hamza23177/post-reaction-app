@@ -30,11 +30,13 @@ class Post {
         commentsCount: json['comments_count'],
         selfLiked: json['likes'].length > 0,
         user: User(
-            id: json['user']['id'],
-            name: json['user']['name'],
-            image: json['user']['image']
-        )
-    );
+          id: json['user']['id'],
+          name: json['user']['name'],
+          image: json['user']['image'],
+          phone: json['user']['phone'],
+          work: json['user']['work'],
+          obs: json['user']['obs'],
+          address: json['user']['address'],
+        ));
   }
-
 }

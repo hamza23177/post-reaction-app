@@ -3,10 +3,7 @@ import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/screens/postMazad_form.dart';
 import 'package:untitled1/screens/post_mazad.dart';
 import 'package:untitled1/screens/profile.dart';
-import 'package:untitled1/services/user_services.dart';
 import 'package:flutter/material.dart';
-
-import 'login.dart';
 
 class MazadScreen extends StatefulWidget {
   @override
@@ -22,32 +19,20 @@ class _MazadScreenState extends State<MazadScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Color(0xffF5F5F5),
-        appBar: AppBar(
-          elevation: 0,
-          title: Text('مزادات دوما'),
-          centerTitle: true,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-          backgroundColor: Color(0xffF57752),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                logout().then((value) => {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => Login()),
-                          (route) => false)
-                });
-              },
-            )
-          ],
-        ),
+        // appBar: AppBar(
+        //   elevation: 0,
+        //   title: Text('مزادات دوما'),
+        //   centerTitle: true,
+        //   systemOverlayStyle: SystemUiOverlayStyle.light,
+        //   backgroundColor: Color(0xffF57752),
+        // ),
         body: currentIndex == 0
             ? Stack(children: [
           PostMazadScreen(),
-          CustomPaint(
-            painter: MyPainter(),
-            child: Container(height: 0),
-          ),
+          // CustomPaint(
+          //   painter: MyPainter(),
+          //   child: Container(height: 0),
+          // ),
         ])
             : Stack(children: [
               Profile(),
@@ -66,7 +51,7 @@ class _MazadScreenState extends State<MazadScreen> {
           },
           child: Icon(Icons.add),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         // bottomNavigationBar: BottomAppBar(
         //   notchMargin: 5,
         //   elevation: 10,

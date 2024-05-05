@@ -25,10 +25,11 @@ class _ProfileState extends State<Profile> {
   TextEditingController txtNameController = TextEditingController();
   TextEditingController numPhoneController = TextEditingController();
   TextEditingController txtWorkController = TextEditingController();
+  TextEditingController txtObsController = TextEditingController();
   TextEditingController txtAddressController = TextEditingController();
 
   Future getImage() async {
-    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -46,6 +47,7 @@ class _ProfileState extends State<Profile> {
         txtNameController.text = user!.name ?? '';
         numPhoneController.text = user!.phone ?? '';
         txtWorkController.text = user!.work ?? '';
+        txtObsController.text = user!.obs ?? '';
         txtAddressController.text = user!.address ?? '';
       });
     } else if (response.error == unauthorized) {
@@ -67,6 +69,7 @@ class _ProfileState extends State<Profile> {
         getStringImage(_imageFile),
         numPhoneController.text,
         txtWorkController.text,
+        txtObsController.text,
         txtAddressController.text);
     setState(() {
       loading = false;
@@ -98,12 +101,12 @@ class _ProfileState extends State<Profile> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Color(0xffF5F5F5),
-        appBar: AppBar(
-          backgroundColor: Color(0xffF57752),
-          elevation: 0,
-          title: Text('الملف الشخصي'),
-          centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Color(0xffF57752),
+        //   elevation: 0,
+        //   title: Text('الملف الشخصي'),
+        //   centerTitle: true, systemOverlayStyle: SystemUiOverlayStyle.light,
+        // ),
         body: loading
             ? Center(
                 child: CircularProgressIndicator(
@@ -111,34 +114,37 @@ class _ProfileState extends State<Profile> {
                 ),
               )
             : Stack(
-              children: [
+                children: [
                   Padding(
                     padding: EdgeInsets.only(top: 40, left: 40, right: 40),
                     child: ListView(
                       children: [
                         Center(
-                            child: GestureDetector(
-                          child: Container(
-                            width: 110,
-                            height: 110,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(60),
-                              image: _imageFile == null
-                                  ? user!.image != null
-                                      ? DecorationImage(
-                                          image: NetworkImage('${user!.image}'),
-                                          fit: BoxFit.cover)
-                                      : null
-                                  : DecorationImage(
-                                      image: FileImage(_imageFile ?? File('')),
-                                      fit: BoxFit.cover),
-                              color: Color(0xffF57752),
+                          child: GestureDetector(
+                            child: Container(
+                              width: 110,
+                              height: 110,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(60),
+                                image: _imageFile == null
+                                    ? user!.image != null
+                                        ? DecorationImage(
+                                            image:
+                                                NetworkImage('${user!.image}'),
+                                            fit: BoxFit.cover)
+                                        : null
+                                    : DecorationImage(
+                                        image:
+                                            FileImage(_imageFile ?? File('')),
+                                        fit: BoxFit.cover),
+                                color: Color(0xffF57752),
+                              ),
                             ),
+                            onTap: () {
+                              getImage();
+                            },
                           ),
-                          onTap: () {
-                            getImage();
-                          },
-                        )),
+                        ),
                         SizedBox(
                           height: 20,
                         ),
@@ -160,7 +166,7 @@ class _ProfileState extends State<Profile> {
                                   controller: numPhoneController,
                                   keyboardType: TextInputType.phone,
                                   validator: (val) =>
-                                  val!.isEmpty ? 'الموبايل غير صالح' : null,
+                                      val!.isEmpty ? 'الموبايل غير صالح' : null,
                                 ),
                                 SizedBox(
                                   height: 20,
@@ -169,7 +175,17 @@ class _ProfileState extends State<Profile> {
                                   decoration: kInputDecoration('العمل'),
                                   controller: txtWorkController,
                                   validator: (val) =>
-                                  val!.isEmpty ? 'العمل غير صالح' : null,
+                                      val!.isEmpty ? 'العمل غير صالح' : null,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  decoration: kInputDecoration('نبذة عن عملك'),
+                                  controller: txtObsController,
+                                  validator: (val) => val!.isEmpty
+                                      ? 'نبذة عن العمل غير صالح'
+                                      : null,
                                 ),
                                 SizedBox(
                                   height: 20,
@@ -178,7 +194,7 @@ class _ProfileState extends State<Profile> {
                                   decoration: kInputDecoration('العنوان'),
                                   controller: txtAddressController,
                                   validator: (val) =>
-                                  val!.isEmpty ? 'العنوان غير صالح' : null,
+                                      val!.isEmpty ? 'العنوان غير صالح' : null,
                                 ),
                                 SizedBox(
                                   height: 20,
@@ -188,23 +204,26 @@ class _ProfileState extends State<Profile> {
                         SizedBox(
                           height: 20,
                         ),
-                        kTextButton('تعديل', () {
-                          if (formKey.currentState!.validate()) {
-                            setState(() {
-                              loading = true;
-                            });
-                            updateProfile();
-                          }
-                        })
+                        kTextButton(
+                          'تعديل',
+                          () {
+                            if (formKey.currentState!.validate()) {
+                              setState(() {
+                                loading = true;
+                              });
+                              updateProfile();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
-                CustomPaint(
-                  painter: MyPainter(),
-                  child: Container(height: 0),
-                ),
+                  // CustomPaint(
+                  //   painter: MyPainter(),
+                  //   child: Container(height: 0),
+                  // ),
                 ],
-            ),
+              ),
       ),
     );
   }

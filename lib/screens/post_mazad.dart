@@ -2,6 +2,7 @@ import 'package:untitled1/constant.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/postMazad.dart';
 import 'package:untitled1/screens/postMazad_form.dart';
+import 'package:untitled1/screens/post_user_profile.dart';
 import 'package:untitled1/services/postMazad_service.dart';
 import 'package:untitled1/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -110,27 +111,44 @@ class _PostMazadScreenState extends State<PostMazadScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 6),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                image: post.user!.image != null ?
-                                DecorationImage(image: NetworkImage('${post.user!.image}')) : null,
-                                borderRadius: BorderRadius.circular(25),
-                                color: Color(0xffF57752),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContactUsPage(
+                                  image: '${post.user!.image}',
+                                  username: '${post.user!.name}',
+                                  work: '${post.user!.work}',
+                                  about: '${post.user!.obs}',
+                                  phone: '${post.user!.phone}',
+                                  location: '${post.user!.address}',
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 10,),
-                            Text(
-                              '${post.user!.name}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  image: post.user!.image != null ?
+                                  DecorationImage(image: NetworkImage('${post.user!.image}'),fit: BoxFit.cover,) : null,
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Color(0xffF57752),
+                                ),
                               ),
-                            )
-                          ],
+                              SizedBox(width: 10,),
+                              Text(
+                                '${post.user!.name}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       post.user!.id == userId ?
@@ -165,22 +183,25 @@ class _PostMazadScreenState extends State<PostMazadScreen> {
                   SizedBox(height: 12,),
                   Text('${post.body}'),
                   post.image != null ?
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height*0.57,
-                    margin: EdgeInsets.only(top: 5),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage('${post.image}'),
-                          fit: BoxFit.contain,
-                        )
+                  GestureDetector(
+                    onTap: () => showFullImage(context, '${post.image}'),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height*0.57,
+                      margin: EdgeInsets.only(top: 5),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage('${post.image}'),
+                            fit: BoxFit.contain,
+                          )
+                      ),
                     ),
                   ) : SizedBox(height: post.image != null ? 0 : 10,),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height*0.5,
                     margin: EdgeInsets.only(top: 5),
-                      child: CommentMazad(
+                      child: CommentMazadScreen(
                         postId: post.id,
                       )
                   ),
@@ -205,7 +226,7 @@ class _PostMazadScreenState extends State<PostMazadScreen> {
                           Icons.sms_outlined,
                           Colors.black54,
                               (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CommentMazad(
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CommentMazadScreen(
                               postId: post.id,
                             )));
                           }

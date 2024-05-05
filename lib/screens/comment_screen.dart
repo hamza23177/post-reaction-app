@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:untitled1/component/painter.dart';
 import 'package:untitled1/models/api_response.dart';
 import 'package:untitled1/models/comment.dart';
+import 'package:untitled1/screens/post_user_profile.dart';
 import 'package:untitled1/services/comment_service.dart';
 import 'package:untitled1/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -159,29 +160,46 @@ class _CommentScreenState extends State<CommentScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                    image: comment.user!.image != null ? DecorationImage(
-                                                        image: NetworkImage('${comment.user!.image}'),
-                                                        fit: BoxFit.cover
-                                                    ) : null,
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    color: Colors.blueGrey
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => ContactUsPage(
+                                                    image: '${comment.user!.image}',
+                                                    username: '${comment.user!.name}',
+                                                    work: '${comment.user!.work}',
+                                                    about: '${comment.user!.obs}',
+                                                    phone: '${comment.user!.phone}',
+                                                    location: '${comment.user!.address}',
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(width: 10,),
-                                              Text(
-                                                '${comment.user!.name}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16
+                                              );
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                      image: comment.user!.image != null ? DecorationImage(
+                                                          image: NetworkImage('${comment.user!.image}'),
+                                                          fit: BoxFit.cover
+                                                      ) : null,
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      color: Colors.blueGrey
+                                                  ),
                                                 ),
-                                              )
-                                            ],
+                                                SizedBox(width: 10,),
+                                                Text(
+                                                  '${comment.user!.name}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 16
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                           comment.user!.id == userId ?
                                           PopupMenuButton(

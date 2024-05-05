@@ -6,6 +6,7 @@ class User {
   String? token;
   String? phone;
   String? work;
+  String? obs;
   String? address;
 
   User({
@@ -16,6 +17,7 @@ class User {
     this.token,
     this.phone,
     this.work,
+    this.obs,
     this.address
   });
 
@@ -30,6 +32,7 @@ class User {
         token: json['token'],
         phone: json['user']['phone'],
         work: json['user']['work'],
+        obs: json['user']['obs'],
         address: json['user']['address'],
     );
   }

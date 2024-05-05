@@ -45,7 +45,7 @@ Future<ApiResponse> login (String email, String password) async {
 
 
 // Register
-Future<ApiResponse> register(String name, String email, String password, String phone, String work, String address) async {
+Future<ApiResponse> register(String name, String email, String password, String phone, String work, String obs, String address) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     final response = await http.post(
@@ -58,6 +58,7 @@ Future<ApiResponse> register(String name, String email, String password, String 
           'password_confirmation': password,
           'phone': phone,
           'work' : work,
+          'obs' : obs,
           'address' : address
         });
 
@@ -112,7 +113,7 @@ Future<ApiResponse> getUserDetail() async {
 }
 
 // Update user
-Future<ApiResponse> updateUser(String name, String? image, String phone, String work, String address) async {
+Future<ApiResponse> updateUser(String name, String? image, String phone, String work, String obs, String address) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -129,6 +130,7 @@ Future<ApiResponse> updateUser(String name, String? image, String phone, String 
           'image': image,
           'phone': phone,
           'work' : work,
+          'obs' : obs,
           'address' : address,
         });
     // user can update his/her name or name and image

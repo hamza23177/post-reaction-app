@@ -22,32 +22,20 @@ class _HomeState extends State<Home> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Color(0xffF5F5F5),
-        appBar: AppBar(
-          elevation: 0,
-          title: Text('منشورات'),
-          centerTitle: true,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-          backgroundColor: Color(0xffF57752),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                logout().then((value) => {
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => Login()),
-                          (route) => false)
-                    });
-              },
-            )
-          ],
-        ),
+        // appBar: AppBar(
+        //   elevation: 0,
+        //   title: Text('منشورات دوما'),
+        //   centerTitle: true,
+        //   systemOverlayStyle: SystemUiOverlayStyle.light,
+        //   backgroundColor: Color(0xffF57752),
+        // ),
         body: currentIndex == 0
             ? Stack(children: [
                 PostScreen(),
-                CustomPaint(
-                  painter: MyPainter(),
-                  child: Container(height: 0),
-                ),
+                // CustomPaint(
+                //   painter: MyPainter(),
+                //   child: Container(height: 0),
+                // ),
               ])
             : Stack(children: [Profile(),
           CustomPaint(
@@ -65,7 +53,7 @@ class _HomeState extends State<Home> {
           },
           child: Icon(Icons.add),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         // bottomNavigationBar: BottomAppBar(
         //   notchMargin: 5,
         //   elevation: 10,
